@@ -41,3 +41,9 @@ def get_today_mood(db):
         .filter(Mood.entry_date == date.today())
         .first()
     )
+def get_mood_history(db):
+    return (
+        db.query(Mood)
+        .order_by(Mood.entry_date.desc())
+        .all()
+    )
