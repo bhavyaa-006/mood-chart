@@ -31,10 +31,10 @@ export default function Hero({ onMoodLogged }) {
   return (
     <section className="hero-section" id="logger">
       <div className="hero-content">
-        <h1 className="text-display" style={{ marginBottom: '8px' }}>
+        <h1 className="text-display" style={{ marginBottom: '8px', color: 'var(--color-bone)' }}>
           Superpowers, everywhere you work
         </h1>
-        <p className="text-subheading font-w460" style={{ color: 'rgba(255,255,255,0.8)', marginBottom: '32px' }}>
+        <p className="text-subheading font-w460" style={{ color: 'rgba(255,255,255,0.9)', marginBottom: '32px' }}>
           Reflect on your day, track your emotions, and build a healthier mind.
         </p>
 
@@ -68,7 +68,7 @@ export default function Hero({ onMoodLogged }) {
             className="cta-button" 
             onClick={handleSave}
             disabled={!selectedMood || isSaving}
-            style={{ width: '100%', justifyContent: 'center', opacity: !selectedMood ? 0.5 : 1 }}
+            style={{ width: '100%', justifyContent: 'center' }}
           >
             {isSaving ? 'Saving...' : 'Save Today\'s Entry'}
           </button>

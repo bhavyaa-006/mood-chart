@@ -41,7 +41,7 @@ export default function History({ refreshCounter }) {
             {entry.note ? (
               <p className="text-body color-graphite">{entry.note}</p>
             ) : (
-              <p className="text-body color-graphite" style={{ fontStyle: 'italic', opacity: 0.5 }}>No note provided.</p>
+              <p className="text-body color-graphite" style={{ fontStyle: 'italic' }}>No note provided.</p>
             )}
           </div>
         );
