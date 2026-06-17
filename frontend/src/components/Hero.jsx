@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getMoodScale, getTodayMood, createOrUpdateMood } from '../api';
 
-export default function Hero({ onMoodLogged }) {
+export default function Hero({ onMoodLogged, accessToken }) {
   const [scale, setScale] = useState([]);
   const [selectedMood, setSelectedMood] = useState(null);
   const [note, setNote] = useState('');
@@ -9,9 +9,9 @@ export default function Hero({ onMoodLogged }) {
 
   useEffect(() => {
     async function loadData() {
-      const s = await getMoodScale();
+      const s = await getMoodScale(accessToken);
       setScale(s);
-      const today = await getTodayMood();
+      const today = await getTodayMood(accessToken);
       if (today) {
         setSelectedMood(today.mood);
         setNote(today.note || '');
@@ -23,7 +23,7 @@ export default function Hero({ onMoodLogged }) {
   const handleSave = async () => {
     if (!selectedMood) return;
     setIsSaving(true);
-    await createOrUpdateMood({ mood: selectedMood, note });
+    await createOrUpdateMood({ mood: selectedMood, note }, accessToken);
     setIsSaving(false);
     if (onMoodLogged) onMoodLogged();
   };

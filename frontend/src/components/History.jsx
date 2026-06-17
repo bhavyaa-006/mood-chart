@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { getMoodHistory, getMoodScale } from '../api';
 
-export default function History({ refreshCounter }) {
+export default function History({ refreshCounter, accessToken }) {
   const [history, setHistory] = useState([]);
   const [scaleMap, setScaleMap] = useState({});
 
   useEffect(() => {
     async function load() {
-      const scale = await getMoodScale();
+      const scale = await getMoodScale(accessToken);
       const map = {};
       scale.forEach(s => map[s.value] = s);
       setScaleMap(map);
 
-      const h = await getMoodHistory();
+      const h = await getMoodHistory(accessToken);
       setHistory(h);
     }
     load();

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, DateTime, Integer, String
+from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String
 from sqlalchemy.sql import func
 
 from app.db.database import Base
@@ -9,6 +9,8 @@ class Mood(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+
     mood = Column(String, nullable=False)
 
     note = Column(String, nullable=True)
@@ -16,7 +18,6 @@ class Mood(Base):
     entry_date = Column(
         Date,
         nullable=False,
-        unique=True,
     )
 
     created_at = Column(

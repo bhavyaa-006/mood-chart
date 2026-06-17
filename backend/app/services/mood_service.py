@@ -5,12 +5,12 @@ from app.core.constants import MOOD_METADATA
 from app.models.mood import Mood
 
 
-def create_or_update_today_mood(db, payload):
+def create_or_update_today_mood(db, payload, user_id: int):
     today = date.today()
 
     existing = (
         db.query(Mood)
-        .filter(Mood.entry_date == today)
+        .filter(Mood.user_id == user_id, Mood.entry_date == today)
         .first()
     )
 
@@ -24,6 +24,7 @@ def create_or_update_today_mood(db, payload):
         return existing
 
     mood = Mood(
+        user_id=user_id,
         mood=payload.mood,
         note=payload.note,
         entry_date=today,
@@ -38,25 +39,27 @@ def create_or_update_today_mood(db, payload):
     return mood
 
 
-def get_today_mood(db):
+def get_today_mood(db, user_id: int):
     return (
         db.query(Mood)
-        .filter(Mood.entry_date == date.today())
+        .filter(Mood.user_id == user_id, Mood.entry_date == date.today())
         .first()
     )
 
 
-def get_mood_history(db):
+def get_mood_history(db, user_id: int):
     return (
         db.query(Mood)
+        .filter(Mood.user_id == user_id)
         .order_by(Mood.entry_date.desc())
         .all()
     )
 
 
-def get_analytics(db):
+def get_analytics(db, user_id: int):
     moods = (
         db.query(Mood)
+        .filter(Mood.user_id == user_id)
         .order_by(Mood.entry_date.asc())
         .all()
     )

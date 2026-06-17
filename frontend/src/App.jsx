@@ -1,54 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import Banner from './components/Banner';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Tabs from './components/Tabs';
-import History from './components/History';
-import Analytics from './components/Analytics';
-import Footer from './components/Footer';
-import { getAnalytics } from './api';
-import './index.css';
+import React from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { useAuth } from './auth/AuthProvider';
+import Landing from './pages/Landing';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
+import Dashboard from './pages/Dashboard';
 
-function App() {
-  const [activeTab, setActiveTab] = useState('history');
-  const [refreshCounter, setRefreshCounter] = useState(0);
-  const [streak, setStreak] = useState(0);
+function ProtectedRoute({ children }) {
+  const { isAuthenticated, loading } = useAuth();
 
-  useEffect(() => {
-    async function fetchBannerData() {
-      const a = await getAnalytics();
-      if (a) {
-        setStreak(a.current_streak);
-      }
-    }
-    fetchBannerData();
-  }, [refreshCounter]);
-
-  const handleMoodLogged = () => {
-    setRefreshCounter(c => c + 1);
-  };
-
-  return (
-    <>
-      <Banner streak={streak} />
-      <Navbar />
-      
-      <Hero onMoodLogged={handleMoodLogged} />
-
-      <main className="content-canvas">
-        <div className="container">
-          <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-          
-          <div style={{ marginTop: '48px' }}>
-            {activeTab === 'history' && <History refreshCounter={refreshCounter} />}
-            {activeTab === 'analytics' && <Analytics refreshCounter={refreshCounter} />}
-          </div>
+  if (loading) {
+    return (
+      <div className="content-canvas">
+        <div className="container" style={{ padding: '48px 0', textAlign: 'center' }}>
+          <div className="loading-spinner" style={{ margin: '0 auto' }} />
         </div>
-      </main>
+      </div>
+    );
+  }
 
-      <Footer />
-    </>
-  );
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  return children;
 }
 
-export default App;
+export default function App() {
+  const { isAuthenticated, loading } = useAuth();
+
+  return (
+    <Routes>
+      <Route path="/" element={<Landing />} />
+
+      <Route
+        path="/login"
+        element={
+          loading ? null : isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          loading ? null : isAuthenticated ? <Navigate to="/dashboard" replace /> : <Signup />
+        }
+      />
+      <Route path="/forgot" element={<ForgotPassword />} />
+
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+}
