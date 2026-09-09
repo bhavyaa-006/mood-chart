@@ -1,0 +1,13 @@
+Requirements : 
+
+1. User profiles - login/sign up/passowrd reset
+2. Streaks - gamified rewards based on daily streaks (like reddit badges)
+3. User details - stress level charts/graphs and charts based on data logged by the user.
+4. Notification generation - reminders to log the day.
+5. Gamification of logging days.
+6. Cute animated interactable characters on the screen.
+7. AI based analytics of the mood , learning based on a persons mental health as they log data.
+8. On making profile ask what the user is interested in practicing more.
+9. Add atleast 6-8 mind games / workouts.
+10. Have a soothing to look at background with a consistent theme throughout the website/webapp.
+
