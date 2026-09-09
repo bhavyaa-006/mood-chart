@@ -680,3 +680,4 @@ The final result should be polished enough to serve as a flagship portfolio proj
 ## 20. Guiding Product Principle
 
 > **Make mental wellness tracking feel approachable, beautiful, useful, and rewarding — while keeping the technology reliable, privacy-conscious, and genuinely full-stack.**
+@agentPlugins https://github.com/addyosmani/agent-skills
