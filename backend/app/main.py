@@ -6,6 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.api.routes.achievements import router as achievements_router
 from app.api.routes.activities import router as activities_router
+from app.api.routes.ai_insights import router as ai_router
 from app.api.routes.analytics import router as analytics_router
 from app.api.routes.auth import router as auth_router
 from app.api.routes.journal import router as journal_router
@@ -27,6 +28,7 @@ app.include_router(analytics_router)
 app.include_router(streaks_router)
 app.include_router(achievements_router)
 app.include_router(activities_router)
+app.include_router(ai_router)
 
 app.add_middleware(
 	CORSMiddleware,
@@ -44,6 +46,19 @@ async def database_error_handler(request: Request, exc: SQLAlchemyError) -> JSON
 
 @app.get("/health", tags=["system"])
 def health_check() -> dict[str, str]:
-	with engine.connect() as connection:
-		connection.execute(text("SELECT 1"))
-	return {"status": "ok", "database": "ok"}
+	try:
+		with engine.connect() as connection:
+			connection.execute(text("SELECT 1"))
+		return {"status": "ok", "database": "ok"}
+	except SQLAlchemyError:
+		return {"status": "degraded", "database": "unavailable"}
+
+
+@app.get("/ready", tags=["system"])
+def readiness_check() -> dict[str, str]:
+	try:
+		with engine.connect() as connection:
+			connection.execute(text("SELECT 1"))
+		return {"status": "ready", "database": "ok"}
+	except SQLAlchemyError:
+		raise JSONResponse(status_code=503, content={"status": "not_ready", "database": "unavailable"})

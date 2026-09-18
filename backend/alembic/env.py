@@ -7,6 +7,7 @@ from app.core.config import get_settings
 from app.db.database import Base
 from app.models.achievement import Achievement, UserAchievement  # noqa: F401
 from app.models.activity import Activity, ActivitySession  # noqa: F401
+from app.models.ai_insight import AIInsight  # noqa: F401
 from app.models.auth_token import PasswordResetToken, RefreshToken  # noqa: F401
 from app.models.journal import JournalEntry  # noqa: F401
 from app.models.mood import MoodEntry  # noqa: F401

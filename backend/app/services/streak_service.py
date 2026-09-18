@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from itertools import pairwise
 
 from sqlalchemy import select
@@ -34,7 +34,9 @@ def get_streak(db: Session, user: User) -> Streak:
 	)
 	unique_dates = sorted(set(dates))
 	lengths = consecutive_lengths(unique_dates)
-	current = lengths[-1] if lengths else 0
+	latest_date = unique_dates[-1] if unique_dates else None
+	active = latest_date is not None and latest_date >= datetime.now(timezone.utc).date() - timedelta(days=1)
+	current = lengths[-1] if active and lengths else 0
 	longest = max(lengths, default=0)
 	total_logs = len(unique_dates)
 	streak = db.scalar(select(Streak).where(Streak.user_id == user.id))
@@ -43,7 +45,7 @@ def get_streak(db: Session, user: User) -> Streak:
 		db.add(streak)
 	streak.current_streak = current
 	streak.longest_streak = longest
-	streak.last_activity_date = unique_dates[-1] if unique_dates else None
+	streak.last_activity_date = latest_date
 	streak.total_logs = total_logs
 	streak.xp = total_logs * 10
 	db.commit()
