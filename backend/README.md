@@ -4,7 +4,7 @@ This backend provides the mood, journal, analytics, activity, and AI insight API
 
 ## Quick start
 
-1. Copy `.env.example` to `.env` and configure your values.
+1. Copy `.env.example` to `.env` and set your Neon `DATABASE_URL`, secret key, and CORS origins.
 2. Create a virtual environment and install dependencies.
 3. Run database migrations with Alembic.
 4. Start the application with Uvicorn.
@@ -20,6 +20,10 @@ This backend provides the mood, journal, analytics, activity, and AI insight API
 - `AI_TIMEOUT_SECONDS`: external provider timeout
 - `AI_MAX_TOKENS`: max tokens for AI completion requests
 - `AI_COOLDOWN_SECONDS`: per-user cooldown for insight generation
+
+`DATABASE_URL` must be a Neon PostgreSQL connection string using the psycopg
+driver, for example `postgresql+psycopg://USER:PASSWORD@HOST/DATABASE?sslmode=require`.
+Do not commit `.env` or place real credentials in `.env.example`.
 
 ## Running migrations
 

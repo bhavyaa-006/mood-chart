@@ -9,12 +9,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
 	app_name: str = "Mood Tracker API"
 	app_env: str = "development"
-	database_url: str = Field(default="sqlite:///./mood_tracker.db")
-	secret_key: str = Field(
-		default="development-only-change-me-use-a-real-secret-key",
-		min_length=32,
-	)
-	cors_origins: str = "http://localhost:5173"
+	database_url: str = Field(min_length=1)
+	secret_key: str = Field(min_length=32)
+	cors_origins: str = Field(min_length=1)
 	access_token_expire_minutes: int = 15
 	refresh_token_expire_days: int = 30
 	password_reset_expire_minutes: int = 30
@@ -30,10 +27,10 @@ class Settings(BaseSettings):
 		env = self.app_env.lower()
 		if env not in {"development", "test", "testing", "production"}:
 			raise ValueError("APP_ENV must be one of: development, test, testing, production")
-		if env == "production" and self.secret_key == "development-only-change-me-use-a-real-secret-key":
-			raise ValueError("SECRET_KEY must be configured in production")
-		if env == "production" and not self.database_url:
-			raise ValueError("DATABASE_URL must be configured in production")
+		if not self.database_url.startswith("postgresql+psycopg://"):
+			raise ValueError("DATABASE_URL must use the postgresql+psycopg driver")
+		if env == "production" and self.cors_origins == "http://localhost:5173":
+			raise ValueError("CORS_ORIGINS must be configured in production")
 		return self
 
 	model_config = SettingsConfigDict(
