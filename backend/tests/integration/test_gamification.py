@@ -1,4 +1,5 @@
 from collections.abc import Generator
+from datetime import datetime, timedelta, timezone
 
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -63,7 +64,14 @@ def log_mood(headers: dict[str, str], entry_date: str) -> None:
 
 def test_streaks_points_and_milestones_are_deterministic() -> None:
 	headers = authenticated_headers()
-	for entry_date in ("2026-09-14", "2026-09-15", "2026-09-16", "2026-09-18"):
+	today = datetime.now(timezone.utc).date()
+	dates = [
+		(today - timedelta(days=4)).isoformat(),
+		(today - timedelta(days=3)).isoformat(),
+		(today - timedelta(days=2)).isoformat(),
+		today.isoformat(),
+	]
+	for entry_date in dates:
 		log_mood(headers, entry_date)
 
 	streak = client.get("/api/streaks", headers=headers)
